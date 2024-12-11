@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>6.7960 Deep Learning Final Project</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="extras/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="extras/github-dark.min.css" disabled>
+        <script src="extras/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">6.7960 Deep Learning Final Project</a>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#deep-learning-for-likelihood-approximation-and-inference" class="nav-link">Deep Learning for Likelihood Approximation and Inference</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#motivation" class="nav-link">Motivation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#background" class="nav-link">Background</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="3"><a href="#likelihood-and-the-inference-problem" class="nav-link">Likelihood and the Inference Problem</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#model-intractability" class="nav-link">Model Intractability</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#classical-approaches-to-approximate-inference" class="nav-link">Classical Approaches to Approximate Inference</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#learning-based-approaches-to-approximate-inference" class="nav-link">Learning-Based Approaches to Approximate Inference</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#methods" class="nav-link">Methods</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="3"><a href="#formulating-the-learning-problem-transfer-learning" class="nav-link">Formulating the learning problem - transfer learning</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#likelihood-approximation-architectures-to-consider" class="nav-link">Likelihood approximation architectures to consider</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#loss-function-formulation" class="nav-link">Loss function formulation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#results" class="nav-link">Results</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="3"><a href="#generalization-comparison" class="nav-link">Generalization Comparison</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="3"><a href="#depth-scaling" class="nav-link">Depth Scaling</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="deep-learning-for-likelihood-approximation-and-inference">Deep Learning for Likelihood Approximation and Inference</h1>
+<h4 id="by-james-morrison-and-nathan-schatz">by James Morrison and Nathan Schatz</h4>
+<blockquote>
+<p><em>We compare the ability of different architectures to approximate and generalize a mapping from a linear space to a family of probability distributions, <script type="math/tex">\;\;\mathcal{L}: \boldsymbol{\Theta}\subseteq\mathbb{R}^p \to \{f_{\mathbf{x}}(\boldsymbol{x};\boldsymbol{\theta}) : \boldsymbol{\theta} \in \boldsymbol{\Theta}\}</script></em>  </p>
+</blockquote>
+<h2 id="motivation">Motivation</h2>
+<p>Statistical inference has laid the foundation for solving complex problems in nearly every technical field including the social sciences, economics, business, biology, engineering, and physics.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> Some assume artificial intelligence (AI) and machine learning (ML) to be a panacea for modeling complex systems. Yet, there remains a class of problems for which a statistical, parametric approach provides important insights or guarantees to researchers, developers, operators, and managers. When modeling for inference, there is often a tradeoff between model tractability and accuracy.<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> Historically, the most accurate model was often too complex to be useful. Instead, only the class of feasible models was considered for computing estimators or testing hypotheses, with the hope that these results <em>might</em> be "good enough." That is, accuracy was sacrificed to make the problem solvable. Machine learning presents an alternative option for closely approximating the intractable but accurate models.</p>
+<p>Although it may seem intuitive to try completely replacing a classical inference problem with a learned model, it is advantageous to use ML as an intermediate step in statistical inference. One approach is to train a neural network to learn the "likelihood function" from which a probabilistic measurement is distributed.<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>  Some benefits to this strategy are:  </p>
+<ol>
+<li> Interpretability and insights, which include characterization of uncertainty</li>    
+<li> Ability to generalize to diverse problem settings, different measures of error, and new prior information without re-training.  </li>  
+</ol>
+
+<p>Furthermore, we can exploit the inductive bias of different network architectures to ensure that the approximated likelihood meets some desirable properties, such as differentiability, convexity, modality, or normality. We explore disparate methods of likelihood approximation and compare the performance of different architectures in terms of approximation and generalization as a function of depth.  </p>
+<h2 id="background">Background</h2>
+<h3 id="likelihood-and-the-inference-problem">Likelihood and the Inference Problem<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup></h3>
+<p>A standard approach for statistical inference is to a model measurements, <script type="math/tex">\mathbf{x}</script>, as a function of parameters, <script type="math/tex">\boldsymbol{\theta}</script>, and random noise, <script type="math/tex">\mathbf{n}</script>:
+<script type="math/tex; mode=display">
+\mathbf{x}=\boldsymbol{h}(\boldsymbol{\theta},\mathbf{n})
+</script>
+Thus, <script type="math/tex">\mathbf{x}</script> is a random vector with the probability density function (PDF) <script type="math/tex">f_\mathbf{x}(\boldsymbol{x};\boldsymbol{\theta})</script> (in the frequentist paradigm) or <script type="math/tex">f_\mathbf{x}(\boldsymbol{x}|\boldsymbol{\theta})</script> (in the Bayesian paradigm). In the former case, <script type="math/tex">\boldsymbol{\theta}</script> are modeled as deterministic, unknown parameters. In the later case, <script type="math/tex">\boldsymbol{\theta}</script> are random variables with the prior PDF <script type="math/tex">f_{\boldsymbol{\theta}}(\boldsymbol{\theta})</script>. In either case, the likelihood function,<br />
+<script type="math/tex; mode=display">
+\mathcal{L}_\mathbf{x}(\boldsymbol{\theta})=f_{\mathbf{x}}(\boldsymbol{x};\boldsymbol{\theta})=f_{\mathbf{x}}(\boldsymbol{x}|\boldsymbol{\theta})
+</script>
+<br />
+is used to infer information related to parameter estimates or other decisions/hypotheses. That is, 
+<script type="math/tex">\mathcal{L}_\mathbf{x}(\boldsymbol{\theta}^*)</script> 
+represents the probability of observing the values in <script type="math/tex">\mathbf{x}</script>, given that the true parameters were <script type="math/tex">\boldsymbol{\theta}=\boldsymbol{\theta}^*</script>. The likelihood function can be used to generate a <em>statistic</em> for either estimating <script type="math/tex">\boldsymbol{\theta}</script> or for decision making. For example, estimation and hypothesis testing problems may beget the formulation:
+<script type="math/tex; mode=display">
+\hat{\theta}_{\mathrm{MLE}}(\mathbf{x})
+= 
+\underset{\theta}{\operatorname{arg max\,}} f(\mathbf{x}; \boldsymbol{\theta})
+= 
+\underset{\theta}{\operatorname{arg max\,}}
+\mathcal{L}_\mathbf{x}(\boldsymbol{\theta}) 
+</script>
+<script type="math/tex; mode=display">
+\Lambda(\mathbf{x})
+=
+\frac{f(\mathbf{x}; H_1)}{f(\mathbf{x}; H_0)}
+=
+\frac{\mathcal{L}_\mathbf{x}(H_1) }{\mathcal{L}_\mathbf{x}(H_0) }
+\quad \underset{H_0}{\overset{H_1}{\gtrless}} \quad \eta
+</script>
+</p>
+<p>or in the Bayesian case: </p>
+<p>
+<script type="math/tex; mode=display">
+\hat{\theta}_{\mathrm{MAP}}(\mathbf{x}) 
+= 
+\underset{\theta}{\operatorname{arg max\,}}
+\underbrace{f(\boldsymbol{\theta}|\mathbf{x})}_{\text{posterior}}  
+= 
+\underset{\theta}{\operatorname{arg max\,}} 
+\underbrace{f(\mathbf{x}|\boldsymbol{\theta})}_{\text{likelihood}} \cdot \frac{\overbrace{f(\boldsymbol{\theta})}^{\text{prior}}}{\underbrace{f(\mathbf{x})}_{\text{evidence}}} 
+= 
+\underset{\theta}{\operatorname{arg max\,}} 
+\mathcal{L}_\mathbf{x}(\boldsymbol{\theta}) \cdot \frac{f(\boldsymbol{\theta})}{f(\mathbf{x})}
+</script>
+<script type="math/tex; mode=display">
+\Lambda(\mathbf{x})
+=
+\frac{f(H_1|\mathbf{x})}{f(H_0|\mathbf{x})}
+=
+\frac{\mathcal{L}_\mathbf{x}(H_1)\cdot\mathbb{P}\{H_1\} }{\mathcal{L}_\mathbf{x}(H_0)\cdot\mathbb{P}\{H_0\} }
+\quad
+\underset{H_0}{\overset{H_1}{\gtrless}} 
+\quad
+\eta
+</script>
+</p>
+<blockquote>
+<p><em>We proceed using the frequentist notation without loss of generality</em></p>
+</blockquote>
+<h3 id="model-intractability">Model Intractability</h3>
+<p>We have seen that the likelihood, <script type="math/tex">\mathcal{L}_\mathbf{x}(\boldsymbol{\theta})</script>, is crucial for inference.  However, inference problems arise in a diverse set of scenarios, many of which either directly impede analytic calculation of <script type="math/tex">\mathcal{L}_\mathbf{x}(\boldsymbol{\theta})</script> or prevent computation of a useful statistic (for example if differentiation or integration with <script type="math/tex">\mathcal{L}_\mathbf{x}(\boldsymbol{\theta})</script> is impossible). These scenarios generally fit into one or more of the following cases:</p>
+<p>1) <strong>The noise is not independent</strong>. Without independence, cumbersome conditional probabilities must be computed.<br>
+2) <strong>The noise is not identically distributed</strong>. Different types of measurements may be combined combined <script type="math/tex">-</script> for example, requiring the product of Gaussian and non-Gaussian random variables (this is harder to handle than multiple Gaussians with different variances, though neither cases is identically distributed).<br>
+3) <strong>The noise varies with a complicated distribution</strong>. It may be hard to differentiate or integrate over the PDF because of its functional form.<br>
+4) <strong>The noise is composite, rather than additive</strong>. The measurement model is said to have composite noise if <script type="math/tex">\mathbf{x}=\boldsymbol{h}(\boldsymbol{\theta},\mathbf{n})\neq\boldsymbol{h}(\boldsymbol{\theta})+\mathbf{n}</script>. That is, noise is composite if it cannot be represented additively.<br>
+5) <strong>The function <script type="math/tex">\boldsymbol{h}(\cdot)</script> is a "black box"</strong>. The parametric model may not have a known analytic form. The same challenges arise as with composite noise. Furthermore, linearization is also impossible in these cases.</p>
+<blockquote>
+<p><em>Note that 1-3 generally arise when calculating the joint PDF from <script type="math/tex">\{f_{\mathrm{x}_i}(x_i;\boldsymbol{\theta})\}_{i=1}^n</script> and 4-5 are particularly pathological because they directly prevent the calculation of even one <script type="math/tex">f_{\mathrm{x}_i}(x_i;\boldsymbol{\theta})</script></em> </p>
+</blockquote>
+<h3 id="classical-approaches-to-approximate-inference">Classical Approaches to Approximate Inference</h3>
+<p>Some classical techniques exist to deal with the intractability of the likelihood function via approximation.  In the simplest scenario, <strong>Laplace's approximation</strong> fits a single Gaussian distribution to the observed data, with mean defined by the MAP estimate and variance defined by the observed Fisher information (a sampled version of Fisher information).<sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>  It is simple to compute at the cost of both poor approximation and generalization.</p>
+<p>Another technique is <strong>Approximate Bayesian Computation</strong>, which maps simulated samples of the distribution <script type="math/tex">f_\mathbf{x}(\boldsymbol{x};\boldsymbol{\theta})</script> to a space of summary statistics.<sup id="fnref2:2"><a class="footnote-ref" href="#fn:2">2</a></sup> It's ability to approximate is limited by the selected summary statistics, and it has poor generalization because it does not actually produce density values associated with <script type="math/tex">\mathcal{L}_\mathbf{x}(\boldsymbol{\theta})</script>.
+This can involve significant computation expense, and additionally requires a finite set of candidate models and parameters to be chosen in advance.</p>
+<h3 id="learning-based-approaches-to-approximate-inference">Learning-Based Approaches to Approximate Inference</h3>
+<p>Neural networks provide a promising method for approximating complex likelihood functions.
+Their ability to approximate arbitrary functions, as expressed by the Universal Approximation Theorem, implies that they can be used to approximate arbitrary valid PDFs or likelihood functions.</p>
+<p><strong>Likelihood Approximation Networks (LANs)</strong> have recently appeared in the cognitive neuroscience literature in order to enhance Bayesian inference methods for cognitive models.<sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup>
+Since analytical likelihood functions are required for the computation of the Bayesian posterior, neuroscientists have typically approximated the likelihood with one of a few tractable cognitive models.
+In order to broaden the scope of considered models, some researchers have trained deep learning models consisting of multilayer perceptrons (MLPs) and convolutional neural networks (CNNs) as substitutes for the typical cognitive models.
+This neural network is then directly used in place of the cognitive model for Bayesian inference.</p>
+<p><strong>Mixture Density Networks (MDNs)</strong> are neural networks with outputs that define a parametric "mixture" model.
+Rather than approximating the likelihood function using the neural network itself, MDNs output the parameters for a linear combination of kernel functions (usually Gaussians).<sup id="fnref:7"><a class="footnote-ref" href="#fn:7">7</a></sup>
+If a mixture of the kernel functions with different parameters can theoretically approximate any arbitrary function, an appropriate loss function will ideally find the optimal parameters for approximating the distribution of the input data.</p>
+<p><strong>Normalizing Flows</strong> are a learned series of invertible transformations that transform a Gaussian distribution into an approximation of a complex distribution described by some data.<sup id="fnref:8"><a class="footnote-ref" href="#fn:8">8</a></sup>
+The parameters of the transformations themselves can be learned.
+Again, an appropriate loss function ideally will cause the resulting transformations to define a PDF that mimics the distribution of the training data.</p>
+<blockquote>
+<p><em>Note that variational autoencoders (VAEs) can approximate a PDF; however, we have the ability to sample <script type="math/tex">\mathbf{x}=\boldsymbol{h}(\boldsymbol{\theta}, \mathbf{n})</script> anywhere, so we already "know" the latent space and have exact importance samples for "free"</em></p>
+</blockquote>
+<h2 id="methods">Methods</h2>
+<p>In order to train ML likelihood approximation models, we simulate data from an arbitrary but complicated distribution. This particular <script type="math/tex">\boldsymbol{h}(\boldsymbol{\theta}, \mathbf{n})</script> happens to be a composite noise model but is treated as a black box for generality. Because it has composite noise, there exists a known analytic form for  <script type="math/tex">\mathbf{x}=\boldsymbol{h}(\boldsymbol{\theta},\mathbf{n})</script>, but there does not exist an analytic form for the PDF, <script type="math/tex">f_\mathbf{x}(\boldsymbol{x};\boldsymbol{\theta})</script>. In particular, we take samples, <script type="math/tex">\mathbf{x}=\boldsymbol{h}(\boldsymbol{\theta},\mathbf{n})</script>, for <script type="math/tex">\boldsymbol{\theta} = [\,\theta_1\;\theta_2\,]^\top</script>, with <script type="math/tex">n_{i,1}\sim \mathcal{N}(0,0.5)</script>, <script type="math/tex">n_{i,2} \sim \mathrm{Laplace}(0,0.5)</script>, and <script type="math/tex">n_{i,3} \sim \mathrm{Uniform}(-0.01,0.01)</script> according to:
+<script type="math/tex; mode=display">
+x_i = \sin(\theta_2+n_{i1}) + \exp \left\{ -\frac{(\theta_1+n_{i2})^2}{2} \right\} + n_{i3} \quad \forall i \in [\,1,M\,]
+</script> 
+One way to think about the conditional PDF <script type="math/tex">f_\mathbf{x}(\boldsymbol{x};\boldsymbol{\theta})</script> is to recognize that different values of <script type="math/tex">\boldsymbol{\theta}</script> each generate a different PDF for <script type="math/tex">\mathbf{x}</script>. Because there is no analytic form for <script type="math/tex">f_\mathbf{x}(\boldsymbol{x};\boldsymbol{\theta})</script>, it is impossible to exactly plot these distributions. However, we can perform kernel density estimation (KDE) with a large number of samples to estimate approximate density values for each <script type="math/tex">x</script>. As the number of samples approaches infinity and the KDE bandwidth approaches 0, the approximate distribution converges to the true distribution. Below, we can see the diversity of the functions that <script type="math/tex">\boldsymbol{h}(\cdot)</script> can generate by plotting the <script type="math/tex">f_\mathbf{x}(\boldsymbol{x};\boldsymbol{\theta})</script> for several values of <script type="math/tex">\boldsymbol{\theta}</script>. To be successful, our models need to learn not only these 3 distributions, but every distribution that <script type="math/tex">\boldsymbol{h}(\cdot)</script> could generate:</p>
+<p><img alt="" src="Figures/h0.png" /></p>
+<p>Training data is generated as samples from different distributions with different values of <script type="math/tex">\boldsymbol{\theta}</script>. We generate training pairs of the following form:
+<script type="math/tex; mode=display">
+\{
+    \{\boldsymbol{\theta}_i, \boldsymbol{x_{i,j}}=\boldsymbol{h}(\boldsymbol{\theta}_i,\mathbf{n})\}_{i=1}^M
+\}_{j=1}^{N}
+</script>
+That is, we have diversity over values of <script type="math/tex">\boldsymbol{\theta}</script> with a large value of <script type="math/tex">M</script>, but we also must take <script type="math/tex">N</script> samples from each distribution to learn the distribution's shape.</p>
+<blockquote>
+<p><em>Note the inherent bias and tradeoff between generalization and approximation from the relative sizes of <script type="math/tex">N</script> and <script type="math/tex">M</script> in our training set</em></p>
+</blockquote>
+<h3 id="formulating-the-learning-problem-transfer-learning">Formulating the learning problem - transfer learning</h3>
+<p>Our core goal is to align our network-approximated PDF as closely as possible with the true PDF of the underlying data distribution parameterized by <script type="math/tex">\boldsymbol{\theta}</script>.  This ultimately means that our approach must be robust enough to fit not only one function, but rather the <em>family of functions</em> parameterized by <script type="math/tex">\boldsymbol{\theta}</script>.  This is a significant departure from many typical applications of Deep Learning, which often seek to approximate a single data-generating function.  Essentially, this means that our model must be robust enough for useful <em>transfer learning</em>.  In other words, our model must transfer accurately within the family of PDFs parameterized by <script type="math/tex">\boldsymbol{\theta}</script>.</p>
+<p>Since we do not have access to the PDF of the underlying data-generating function, we cannot use a standard loss function such as KL-Divergence to compare the two PDFs.  However, we do have access to a large number of training samples from the unknown distribution.  If our approximated likelihood function fits the samples well, it should assign high probability to the areas with the most training samples, and low probability to the areas with fewer samples in <script type="math/tex">\boldsymbol{\theta}</script>-space.</p>
+<blockquote>
+<p><em>Note that the simplification of KL-Divergence to a sum of log probabilities is the same "trick" as used in the VAE evidence lower bound (ELBO)<script type="math/tex">-</script> more on this in the following sections</em><sup id="fnref:9"><a class="footnote-ref" href="#fn:9">9</a></sup>  </p>
+</blockquote>
+<h3 id="likelihood-approximation-architectures-to-consider">Likelihood approximation architectures to consider</h3>
+<p>We consider a few approaches for approximating the complex likelihood function and evaluate their tradeoffs. By definition, a PDF must have unit area; that is, integration over its domain must result in a total probability of 1. However, the MLP-based LAN lacks the structure to guarantee this property.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Unit Area</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ABC</td>
+<td>Approximate</td>
+<td>Flexible and non-parametric.</td>
+<td>Requires extensive simulations for each trial model; slow; requires analytical work for selecting summary statistics.</td>
+</tr>
+<tr>
+<td>LAN</td>
+<td>No</td>
+<td>Straightforward to implement.</td>
+<td>Computationally expensive for large-scale problems; data-hungry and difficult to train.</td>
+</tr>
+<tr>
+<td>MDN</td>
+<td>Yes</td>
+<td>Directly parameterizes likelihood; expresses complex distributions as a linear combination of simple distributions.</td>
+<td>Can be unstable for complex or highly multimodal distributions.</td>
+</tr>
+<tr>
+<td>Normalizing Flows</td>
+<td>Yes</td>
+<td>Flexible and expressive.</td>
+<td>Computationally intensive training; requires careful architecture design.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loss-function-formulation">Loss function formulation</h3>
+<p><strong>Likelihood Approximation Networks (LANs)</strong>: After fixing <script type="math/tex">\boldsymbol{\theta}</script> and generating samples, <script type="math/tex">\mathbf{x}</script>, perform KDE to generate target densities for each sampled point. That is our training set has tuples of the form <script type="math/tex">\{[\,x_i\;\boldsymbol{\theta}_i\,],y_i\}_{i=1}^M</script>.  We train the model using the standard MSE loss function.</p>
+<p><img alt="" src="Figures/lan.png" /></p>
+<p><strong>Normalizing Flows</strong>: The normalizing flow model starts with a base distribution (a unit Gaussian).  These chained invertible and differentiable transformations can be considered as one larger, more complex, invertible and differentiable transformation of the unit Gaussian.  Formally:
+<script type="math/tex; mode=display">x = \mathbf{f}(z)</script>
+<script type="math/tex; mode=display">z \sim \mathcal{N}(0,1)</script>
+<script type="math/tex; mode=display">\mathbf{f} = \mathbf{f}_1 \, \circ \, \mathbf{f}_2 \, \circ \cdots \circ \, \mathbf{f}_n</script>
+<script type="math/tex; mode=display">f(x) = f_z(\mathbf{f}^{-1}(x)) \; \text{abs} \left\{ \det \left( \frac{\partial \mathbf{f}^{-1}}{\partial x} \right) \right\}</script>
+We define 8 Autoregressive Spline flow layers, each with hidden dimension 64.<sup id="fnref:10"><a class="footnote-ref" href="#fn:10">10</a></sup>  The parameters of these flow layers will be learned by the model.  For training loss, we can maximize the likelihood of the observed samples under the learned PDF, which is equivalent to:
+<script type="math/tex; mode=display">
+\underset{\mathbf{f}(\cdot)}{\operatorname{arg min\,}}-\frac{1}{M} \sum_{i=1}^M \log \mathbf{f}_{\mathbf{x}}(x_i)
+</script>
+</p>
+<p><img alt="" src="Figures/nf.png" /></p>
+<p><strong>Mixture Density Networks (MDNs)</strong>: As described above, an MDN outputs the parameters of a PDF composed of a mixture of kernel functions (in our case Gaussians).  A latent parameter vector  <script type="math/tex">\boldsymbol{\theta}</script> is chosen and sent to the input of the neural network (MLP).  A batched sample <script type="math/tex">\mathbf{x}</script> is also generated under this parameter.  Each of the output neurons represents a mean, variance, or weight of one of the <script type="math/tex">K</script> kernels, resulting in a total of <script type="math/tex">3K</script> output neurons.  The MLP can be trained similarly to the Normalizing Flow model, attempting to maximize the log probability of the sample <script type="math/tex">\mathbf{x}</script>.</p>
+<p>Unlike the Normalizing Flow model, however, the MLP output simply gives us the parameters of a Gaussian Mixture Model, which we use to construct a synthetic distribution and evaluate the log probability of the sample under the learned model.  We average this objective over the <script type="math/tex">M</script> observations within <script type="math/tex">\mathbf{x}</script>, and use backpropagation to update the MLP parameters.  After training over many values of <script type="math/tex">\boldsymbol{\theta}</script>, our MLP should be able to take an arbitrary input <script type="math/tex">\boldsymbol{\theta}</script> and output the parameters of the <script type="math/tex">K</script>-component Gaussian Mixture Model that most accurately describes the true distribution <script type="math/tex">f(x; \boldsymbol{\theta})</script>.</p>
+<p><img alt="" src="Figures/mdn.png" /></p>
+<h2 id="results">Results</h2>
+<p>Each model must learn function approximations for a large domain of <script type="math/tex">\boldsymbol{\theta}</script> values based on only a few sample points from each distribution. Below, we see the KDE of a distribution for a specified <script type="math/tex">\boldsymbol{\theta}</script> along with the models' learned approximations based on only a few samples from that distribution:</p>
+<p><img alt="" src="Figures/h1.png" /></p>
+<p>We see that the MLP-based LAN lacks the structure to create a convincing PDF; however, both the NF and the MDN perform well for this particular <script type="math/tex">\boldsymbol{\theta}</script>.</p>
+<h3 id="generalization-comparison">Generalization Comparison</h3>
+<p>Our main goal is to evaluate the performance of these network architectures at different values of <script type="math/tex">\boldsymbol{\theta}</script>.  Since each point in <script type="math/tex">\boldsymbol{\theta}</script>-space parameterizes a distinct data-generating function with its own unique PDF, this is the same as evaluating the trained model's out-of-domain performance.  The following heat map comparison illustrates how each model's unique inductive biases contribute to its generalization performance for this data-generating process.  The red rectangle represents in-domain performance, i.e., <script type="math/tex">\boldsymbol{\theta}</script> was sampled uniformly within the red square during the training process.</p>
+<p><img alt="" src="Figures/h2.png" /></p>
+<p>The NF and MDN architectures perform significantly better than the LAN.  The MLP-based LAN fails to capture the periodic effects of <script type="math/tex">\theta_1</script> in the data-generating process, even within the training domain. The MLP does not exploit the structure of multiple samples from the same <script type="math/tex">\boldsymbol{\theta}</script> as being identically distributed. That is, it makes no assumption that 
+<script type="math/tex">\{\boldsymbol{\theta}_i, \boldsymbol{x_{i,1}}=\boldsymbol{h}(\boldsymbol{\theta}_i,\mathbf{n})\}_{i=1}^M</script> and <script type="math/tex">\{\boldsymbol{\theta}_i, \boldsymbol{x_{i,2}}=\boldsymbol{h}(\boldsymbol{\theta}_i,\mathbf{n})\}_{i=1}^M</script> are related. As a result, the MSE loss criterion forces the LAN towards an average bias, where it learns sensitivity to <script type="math/tex">\theta_1</script> but is invariant to  <script type="math/tex">\theta_2</script>.</p>
+<p>The MDN architecture performs better along the <script type="math/tex">\theta_2</script> axis for in-domain data than the NF. That is, it learns better sensitivity to the periodicity of <script type="math/tex">\theta_2</script>. However, it fails to generalize to out-of-domain data as well as the NF model.  This is due to the inductive biases of the two strategies: the MDN assumes that the distribution has the form of a Gaussian Mixture Model, while the NF assumes that the distribution can be expressed as a composition of spline flows.  Although the Gaussian Mixture Model can robustly approximate any PDF, it clearly does not generalize well beyond the values of <script type="math/tex">\boldsymbol{\theta}</script> that it has seen. That is, the NF model identifies functional components that are consistent across the parameter space (especially with respect to <script type="math/tex">\theta_1</script>), whereas the MDN just learns the optimal approximations in-sample data.</p>
+<h3 id="depth-scaling">Depth Scaling</h3>
+<p>In addition to inductive bias for generalization we compared the effect of increasing depth on model performance. Below, the resulting loss (negative log probability of generated in-domain data) is displayed for 150 models:</p>
+<p><img alt="" src="Figures/h3.png" /></p>
+<p>In general, the most substantial gains in model depth happen before a depth of 10. The MLP-based LAN saturates to the worst (highest) loss value, the normalizing flow saturates to the best (lowest) loss value, and the MDN oscillates in the middle until a depth of about 30, at which point it begins to perform worse (relative to the same learning rate). Thus, we see that depth does not provide the same dividends to the likelihood approximation problem as in other research areas. Instead, architecture selection is crucial toward effective likelihood learning.</p>
+<blockquote>
+<p><em>Note that the typical training/validation loss paradigm is incompatible with the likelihood approximation problem, because the NF model and MDN are unsupervised and the MLP-based LAN has training targets based on an approximation</em></p>
+</blockquote>
+<h2 id="conclusion">Conclusion</h2>
+<p>An accurate and useful characterization of likelihood functions is crucial for solving inference problems, which enables decision-making and understanding across a vast array of research efforts and scientific pursuits. In a statistical inference setting, model accuracy is limited by analytic tractability. In this work, we compared the ability to approximate PDFs as a function of depth and generalize as a function of model inductive bias for MLP-based LANs, NF models, and MDNs.</p>
+<p>Our composite data-generating process, parameterized by the 2D vector <script type="math/tex">\boldsymbol{\theta}</script>, allowed us to efficiently generate training samples for these three architectures.  After training several variations of these three architectures with different depths, we compared both their in-domain approximation performance and out-of-domain generalization capability using heat maps.</p>
+<p>Overall, we conclude that the normalizing flow architecture most effectively approximates PDFs and has the best generalization profile for this problem because of its ability to learn functional components of the data-generating process. The MDN could effectively approximate PDFs but suffered from a poor generalization profile. The MLP-based LAN architecture failed to approximate the PDF well, scaled poorly with depth, and was inductively biased towards only learning the effect of a single parameter.</p>
+<p>In many contexts where predictions or conclusions must be extracted from an opaque data-generating process, deep learning can be a useful supplement to classical approximate inference techniques.  Although approximation sacrifices some of the guarantees provided by pure statistical inference, deep learning techniques present an opportunity for a window into understanding complex processes where classical analysis is already intractable.  These techniques are powerful tools that help enable researchers across all domains to push the boundaries of tractability and explore the dynamics of more complex processes.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Johnson, Richard. “Statistical Inference”, Encyclopedia of Mathematics. Department of Statistics, University of Wisconsin, 2016.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Beaumont, Mark. “Approximate Bayesian computation in evolution and ecology.” Annual review of ecology, evolution, and systematics, 41.1, 2010.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Moustakides, George, and Kalliopi Basioti. “Training neural networks for likelihood/density ratio estimation.” arXiv preprint arXiv:1911.00405, 2019.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Casella, George, and Robert Berger. Statistical Inference, 2nd ed. Duxbury, 2001.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>MacKay, David. “Laplace’s Method”, Information Theory, Inference and Learning Algorithms, Cambridge University Press, 2003.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Fengler, Alexander, et al. “Likelihood approximation networks (LANs) for fast inference of simulation models in cognitive neuroscience.” Elife, 2021.&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:7">
+<p>Bishop, Christopher. “Mixture density networks.” 1994.&#160;<a class="footnote-backref" href="#fnref:7" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+<li id="fn:8">
+<p>Kobyzev, Ivan, Simon JD Prince, and Marcus A. Brubaker. "Normalizing flows: An introduction and review of current methods." IEEE transactions on pattern analysis and machine intelligence, 2020.&#160;<a class="footnote-backref" href="#fnref:8" title="Jump back to footnote 8 in the text">&#8617;</a></p>
+</li>
+<li id="fn:9">
+<p>Torralba, Antonio, and Phillip Isola and William Freeman. "Representation Learning," <em>Foundations of Computer Vision.</em> 2024.&#160;<a class="footnote-backref" href="#fnref:9" title="Jump back to footnote 9 in the text">&#8617;</a></p>
+</li>
+<li id="fn:10">
+<p>Durkan, Conor, et al. "Neural spline flows." Advances in neural information processing systems, 2019.&#160;<a class="footnote-backref" href="#fnref:10" title="Jump back to footnote 10 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2024-12-09 21:33:15.067047+00:00
+-->
